@@ -57,7 +57,7 @@ export function usePhoneScene(progress: MotionValue<number>) {
   // yellow → white; the hero zone beneath it collapses toward banner size.
   const headerBg = useTransform(progress, [0.28, 0.45], ["#FFDC00", "#ffffff"]);
   const headerContentOpacity = useTransform(progress, [0.4, 0.5], [0, 1]);
-  const heroHeight = useTransform(progress, [0.28, 0.5], ["34%", "22%"]);
+  const heroHeight = useTransform(progress, [0.28, 0.5], ["34%", "30%"]);
   // The sheet's top edge always sits directly below the header + hero —
   // derived from heroHeight rather than duplicating the range map, so the
   // two stay pixel-locked to each other at every point in the scroll.
