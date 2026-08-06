@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — copied from design.md's Tailwind v4 recipe, with two
+ * deliberate adjustments:
+ *
+ * 1. Font-size / line-height pairs use Tailwind v4's real pairing syntax
+ *    (`--text-<name>--line-height`) instead of a separate `--leading-*`
+ *    token, so `text-caption` etc. apply both in one utility class.
+ * 2. The 8/16/32/50/64/135/225 spacing scale is intentionally NOT lifted
+ *    into `--spacing-*` — those keys would silently override Tailwind's
+ *    own numeric spacing scale (p-8 already means 32px). Spacing is
+ *    instead applied with arbitrary-value utilities (`py-[64px]`,
+ *    `gap-[16px]`) directly at each call site, reading off the same
+ *    64–135px section rhythm the reference calls for.
+ */
+@theme {
+  --font-system: "-apple-system", ui-sans-serif, system-ui, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+
+  --color-ink: #222222;
+  --color-paper: #ffffff;
+  --color-stone: #d8d4cf;
+  --color-pure-black: #000000;
+  --color-stamp: #0000ff;
+  --color-link: #555abf;
+  --color-navy: #000080;
+  --color-cobalt: #276baa;
+  --color-sky: #2181c2;
+  --color-amber: #fcd669;
+  --color-tangerine: #f79a59;
+  --color-ember: #eb5e28;
+
+  --text-caption: 14px;
+  --text-caption--line-height: 1.5;
+  --text-body-sm: 16px;
+  --text-body-sm--line-height: 1.5;
+  --text-body: 18px;
+  --text-body--line-height: 1.5;
+  --text-subheading: 24px;
+  --text-subheading--line-height: 1.4;
+  --text-heading: 40px;
+  --text-heading--line-height: 1.2;
+  --text-heading-lg: 48px;
+  --text-heading-lg--line-height: 1.2;
+}
+
+:root {
+  color-scheme: light;
+  --measure: 560px;
+  --page-max: 1200px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* Lenis owns smooth scrolling; native smooth-scroll would fight it. */
+  scroll-behavior: auto;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-system);
+  font-size: 18px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-stamp);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--color-stamp);
+  color: var(--color-paper);
+}
+
+.reading-measure {
+  max-width: var(--measure);
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -48px;
+  z-index: 100;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  padding: 10px 16px;
+  font-size: 14px;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
