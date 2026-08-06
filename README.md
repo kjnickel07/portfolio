@@ -1,7 +1,7 @@
-# Portfolio — Karl Nickel
+# Welcome to the source for my personal portfolio website!
 
 A scroll-driven personal portfolio. At rest it reads as a flat, printed
-document — system font stack, `#222222` on `#ffffff`, sharp corners, no
+document: system font stack, `#222222` on `#ffffff`, sharp corners, no
 shadows on chrome. Motion is the only thing that isn't printed: two
 case-study scenes (serviceUNSW, TerraCast) carry the site's colour,
 gradients and shadow as sanctioned illustration content.
@@ -49,5 +49,5 @@ lib/
 ```
 
 Every scroll-driven scene has a first-class `prefers-reduced-motion`
-fallback — a fully static, complete rendition of the same content, not a
+fallback. It's a fully static, complete rendition of the same content, not a
 degraded placeholder.
