@@ -2,6 +2,7 @@ import Image from "next/image";
 import { IoPerson } from "react-icons/io5";
 import { AppColors, AppHeaderTokens, AppSpacing } from "./app-reference";
 import { usePx } from "./phone-scale-context";
+import { BASE_PATH } from "@/lib/base-path";
 
 /**
  * The real app's header: UNSW crest + wordmark on the left (the actual
@@ -19,7 +20,7 @@ export function AppHeader() {
       style={{ paddingInline: px(AppSpacing.four), paddingBlock: px(AppSpacing.three) }}
     >
       <Image
-        src="/unsw-logo.png"
+        src={`${BASE_PATH}/unsw-logo.png`}
         alt="UNSW Sydney"
         width={px(AppHeaderTokens.logoWidth)}
         height={px(AppHeaderTokens.logoHeight)}

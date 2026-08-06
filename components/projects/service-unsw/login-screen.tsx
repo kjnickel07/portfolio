@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useTransform, type MotionValue } from "motion/react";
 import { AppColors, AppLogin, AppSpacing, AppType } from "./app-reference";
 import { usePx } from "./phone-scale-context";
+import { BASE_PATH } from "@/lib/base-path";
 
 interface LoginScreenProps {
   progress: MotionValue<number>;
@@ -64,7 +65,7 @@ export function LoginScreen({ progress, slot }: LoginScreenProps) {
           className="absolute left-1/2"
           style={{ top: `calc(26% - ${logoHeight + gap}px)`, transform: "translateX(-50%)" }}
         >
-          <Image src="/unsw-logo.png" alt="" width={logoWidth} height={logoHeight} unoptimized />
+          <Image src={`${BASE_PATH}/unsw-logo.png`} alt="" width={logoWidth} height={logoHeight} unoptimized />
         </div>
       </motion.div>
     );
