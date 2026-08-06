@@ -30,8 +30,9 @@ export const about = {
   heading: "About",
   paragraphs: [
     "I'm a third-year Software Engineering student at UNSW, based in Sydney.",
-    "Most of what's on this page came out of two team projects: leading development on Service UNSW, a campus app built inside UNSW's Virtually Integrated Projects program, and building the ingestion and risk-scoring pipeline behind TerraCast, an agricultural weather platform, for SENG3011.",
-    "Outside of coursework I've spent time at Telstra diagnosing technical problems under pressure, and as a UNSW Student Equity Ambassador presenting to audiences considerably larger than my comfort zone. Both taught me the same lesson from different angles: explain the complicated thing plainly, or it doesn't count as understood.",
+    "As a passionate technologist, I love all things tech and have recently taken an interest in mobile app development and cloud architecture. This love has stemmed from two major projects.",
+    "Leading development on Service UNSW, a campus app built inside UNSW's Virtually Integrated Projects program, and building the ingestion and risk-scoring pipeline behind Terracast, an agricultural weather platform, for SENG3011.",
+    "Outside of coursework I'm a Sales Consultant at Telstra, and as a former UNSW Student Equity Ambassador I have presented to audiences considerably larger than my comfort zone. Both taught me the same lesson from different angles: explain the complicated thing plainly or it doesn't count as understood.",
   ],
 };
 
@@ -39,38 +40,38 @@ export const experience = {
   heading: "Experience",
   roles: [
     {
-      title: "Team Lead — Service UNSW",
+      title: "Team Lead @ Service UNSW",
       org: "UNSW Virtually Integrated Projects (VIP)",
-      period: "2025 — Present",
+      period: "January 2026 - Present",
       description:
         "Coordinating frontend and backend workstreams for a student-facing campus app — timetable, campus map, room bookings and student ID — built on Expo Router and React Native.",
     },
     {
-      title: "Software Engineer — TerraCast",
+      title: "Lead Architect @ Terracast",
       org: "UNSW SENG3011",
-      period: "2025",
+      period: "February 2026 - May 2026",
       description:
         "Built the weather ingestion and risk-scoring pipeline for a vineyard weather-intelligence platform: AWS Lambda microservices, DynamoDB and S3 archival, CI/CD and integration testing against LocalStack.",
     },
     {
-      title: "Technical Support",
+      title: "Retail Sales Consultant",
       org: "Telstra",
-      period: "2024 — 2025",
+      period: "June 2024 - Present",
       description:
         "Diagnosed and resolved complex technical issues under time pressure, routinely exceeding performance targets by up to 50%.",
     },
     {
       title: "Student Equity Ambassador",
       org: "UNSW",
-      period: "2024 — Present",
+      period: "December 2024 - December 2025",
       description:
         "Presenting to large, diverse audiences and coordinating groups of up to fifteen peers to run campus-wide equity events.",
     },
     {
-      title: "B.Software Engineering",
+      title: "B.Software Engineering (Honours)",
       org: "UNSW Sydney",
-      period: "2023 — 2026 (expected)",
-      description: "Third-year undergraduate, Software Engineering.",
+      period: "2024 - 2028",
+      description: "Third-year undergraduate pursuing a Bachelor of Software Engineering (Honours). Coursework completion due December 2027.",
     },
   ],
 };
@@ -94,17 +95,17 @@ export const serviceUnsw = {
     {
       range: "Login",
       title: "One yellow arrival",
-      body: "The whole page opens in UNSW yellow — a hero panel, two soft translucent shapes, the wordmark, and a white sheet holding just a zID and a password.",
+      body: "Service UNSW welcomes you to login to view your UNSW services with a classy yet simple login screen.",
     },
     {
-      range: "Turning",
-      title: "Off the page",
-      body: "As you scroll, the frame lifts and turns in 3D. Nothing here is a screenshot — every layer is real markup, animating independently.",
+      range: "Hi (again)",
+      title: "I hope you appreciate this animation",
+      body: "As you scroll, the frame lifts and turns in 3D. Nothing here is a screenshot. Every layer is real markup, animating independently.",
     },
     {
       range: "Home",
-      title: "Login becomes home",
-      body: "The yellow hero collapses into a banner. The student ID card springs into place. Favourites and today's classes stagger in, and the tab bar rises last to close the scene.",
+      title: "Welcome to Service UNSW",
+      body: "Tested and iterated upon vigorously with real student UAT to validate features and design. A real solution to a real problem.",
     },
   ],
   links: {
@@ -114,7 +115,7 @@ export const serviceUnsw = {
 
 export const terracast = {
   id: "terracast",
-  eyebrow: "Agritrech at UNSW",
+  eyebrow: "Lead Cloud Architect",
   name: "TerraCast",
   role: "Software Engineer",
   summary:
@@ -128,45 +129,12 @@ export const terracast = {
     "SNS",
   ],
   paragraphs: [
-    "Every night, an EventBridge cron rule triggers a Lambda that scans the day's weather data out of DynamoDB, archives it to S3, and clears the table for the next cycle, the same pipeline that feeds a live frost, heat, hail, rain and wind risk score across sixty-five locations in NSW.",
-    "I built the ingestion and risk-scoring services behind that pipeline: ingesting Open-Meteo data, deriving the risk indicators, and testing the whole path end-to-end against LocalStack before it ever touched production AWS.",
+    "Used an industry standard cloud architecture pattern (serverless event-driven microservices) to implement an agritech solution for winefarmers, powered by the standard modern practice of Infrastructure-as-Code (IAC).",
+    "I architected the solution end-to-end and built the ingestion and risk-scoring services behind that pipeline: ingesting Open-Meteo data, deriving the risk indicators, and testing the whole path end-to-end loaclly before it ever touched production AWS.",
   ],
   links: {
     repo: "https://github.com/kjnickel07/Terracast",
   },
-};
-
-export const diseaseMcp = {
-  id: "disease-risk-mcp",
-  eyebrow: "Terracast MCP",
-  name: "Disease-Risk MCP Server",
-  role: "TerraCast · Model Context Protocol",
-  summary:
-    "A Model Context Protocol server that lets an AI assistant reason about vineyard disease risk — comparing forecasting models for downy mildew, powdery mildew and botrytis under a chosen decision policy.",
-  tools: [
-    "list_models",
-    "score_models_for_period",
-    "compare_models",
-    "explain_model_difference",
-    "recommend_operational_model",
-  ],
-  policies: [
-    {
-      key: "minimize_misses",
-      label: "Minimize misses",
-      note: "Favours the model that catches the most true outbreaks, tolerating more false alarms.",
-    },
-    {
-      key: "balanced",
-      label: "Balanced",
-      note: "Weighs missed outbreaks and false alarms evenly — the default operating point.",
-    },
-    {
-      key: "minimize_false_alarms",
-      label: "Minimize false alarms",
-      note: "Favours the model that stays quiet unless it's confident, at the cost of a slower warning.",
-    },
-  ],
 };
 
 export const also = {
