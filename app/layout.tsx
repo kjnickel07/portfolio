@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import { Header } from "@/components/layout/header";
 import { site, hero } from "@/lib/content";
@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     description: hero.thesis,
     type: "website",
   },
+};
+
+// Separate from `metadata` — Next silently ignores `themeColor` if it's
+// nested under the `metadata` export instead of its own `viewport` export.
+export const viewport: Viewport = {
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

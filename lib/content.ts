@@ -19,11 +19,11 @@ export const site = {
 };
 
 export const hero = {
-  eyebrow: "Hey there! I'm",
+  eyebrow: "Hi I'm",
   name: "Karl Nickel",
   role: "Software Engineer",
   thesis:
-    "Building thoughtful software with a focus on interaction, performance, and creating software people genuinely enjoy using.",
+    "Full stack software engineer. Cloud enthusiast. Penultimate year student at UNSW. Team lead at Service UNSW.",
 };
 
 export const about = {
@@ -44,14 +44,14 @@ export const experience = {
       org: "UNSW Virtually Integrated Projects (VIP)",
       period: "January 2026 - Present",
       description:
-        "Coordinating frontend and backend workstreams for a student-facing campus app — timetable, campus map, room bookings and student ID — built on Expo Router and React Native.",
+        "Coordinating frontend and backend workstreams for a student-facing campus app with wallet-style UX integrating timetable, campus map, room bookings and student ID. Built on Expo Router and React Native.",
     },
     {
       title: "Lead Architect @ Terracast",
       org: "UNSW SENG3011",
       period: "February 2026 - May 2026",
       description:
-        "Built the weather ingestion and risk-scoring pipeline for a vineyard weather-intelligence platform: AWS Lambda microservices, DynamoDB and S3 archival, CI/CD and integration testing against LocalStack.",
+        "Built the weather ingestion and risk-scoring pipeline for a vineyard weather-intelligence platform. AWS Lambda microservices, DynamoDB and S3 archival, CI/CD and integration testing.",
     },
     {
       title: "Retail Sales Consultant",
@@ -143,20 +143,15 @@ export const also = {
     {
       title: "Aftermarket head unit teardown",
       description:
-        "Rooted and reverse-engineered an aftermarket Android car head unit — dumping its package table and activity resolver to work out what could safely be replaced.",
-    },
-    {
-      title: "Smaller repos",
-      description: "Coursework, experiments and one-off tools live on GitHub.",
-      href: site.github,
+        "Reverse-engineered an aftermarket Android car head unit by exploiting a vulnerability in a deprecated pre-installed APK, dumping its package table and activity resolver to work out what could safely be replaced and performing an end-to-end analysis of the device's security and the safety of its users.",
     },
   ],
 };
 
 export const colophon = {
-  heading: "Colophon",
+  heading: "Reach Out",
   paragraphs: [
-    "Set in the system font stack — no webfont loads on this page. Built with Next.js, Framer Motion and Lenis. Colour, gradients and shadow are reserved for the two case-study illustrations above; everything else on the page is flat, sharp-cornered paper.",
+    "Thank you for stopping by. If you want to stay in touch, I'm reachable here."
   ],
   links: [
     { label: "Email", href: `mailto:${site.email}` },

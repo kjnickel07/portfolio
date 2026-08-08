@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — copied from design.md's Tailwind v4 recipe, with two
- * deliberate adjustments:
+ * Design tokens. Originally seeded from design.md's Tailwind v4 recipe;
+ * the site has since moved to a dark monochrome theme and this file, not
+ * design.md, is now the authority on color. Two structural adjustments
+ * from the original recipe remain:
  *
  * 1. Font-size / line-height pairs use Tailwind v4's real pairing syntax
  *    (`--text-<name>--line-height`) instead of a separate `--leading-*`
@@ -13,23 +15,24 @@
  *    instead applied with arbitrary-value utilities (`py-[64px]`,
  *    `gap-[16px]`) directly at each call site, reading off the same
  *    64–135px section rhythm the reference calls for.
+ *
+ * Token names describe role (`paper` = page ground, `ink` = primary
+ * text), not literal color, so a monochrome white-on-black reading stays
+ * as semantically honest as the original paper-white one.
  */
 @theme {
   --font-system: "-apple-system", ui-sans-serif, system-ui, BlinkMacSystemFont,
     "Segoe UI", Roboto, sans-serif;
 
-  --color-ink: #222222;
-  --color-paper: #ffffff;
-  --color-stone: #d8d4cf;
-  --color-pure-black: #000000;
-  --color-stamp: #0000ff;
-  --color-link: #555abf;
-  --color-navy: #000080;
-  --color-cobalt: #276baa;
-  --color-sky: #2181c2;
-  --color-amber: #fcd669;
-  --color-tangerine: #f79a59;
-  --color-ember: #eb5e28;
+  --color-ink: #ededed;
+  --color-paper: #0a0a0a;
+  --color-stone: #2a2a2a;
+  --color-stamp: #ffffff;
+  --color-link: #a1a1a1;
+  /* The Service UNSW phone chassis — deliberately NOT `ink` (which is
+     near-white here) and not pure black (it would vanish into the page).
+     See components/projects/service-unsw/phone.tsx. */
+  --color-device: #1c1c1c;
 
   --text-caption: 14px;
   --text-caption--line-height: 1.5;
@@ -46,9 +49,12 @@
 }
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   --measure: 560px;
   --page-max: 1200px;
+  /* Ambient sunlight intensity — one knob for the whole effect (body::before
+     below). 0 = off · 0.6 = barely there · 1 = tuned default · 1.5 = strong */
+  --sunlight-strength: 3;
 }
 
 * {
@@ -72,6 +78,91 @@ body {
 
 a {
   color: inherit;
+}
+
+/*
+ * Ambient sunlight — soft morning light entering from the top-right, as
+ * through a curtain. Two stacked radials: a warmer core near the corner
+ * and a broad, cooler spill reaching toward centre-left, since scattered
+ * light both desaturates and cools as it travels.
+ *
+ * Both gradient centres sit ABOVE the top edge (negative Y), so what's on
+ * screen is the falloff, never the hotspot — this is what makes it read
+ * as light entering from outside rather than a glow painted on the page.
+ *
+ * Fixed + z-index:-1 as a body child: `html` sets no background, so
+ * `body`'s --color-paper propagates to the root canvas and body itself
+ * paints no background box. A negative-z child therefore lands above the
+ * canvas but below all in-flow content. (z-0 would paint OVER the prose,
+ * since static content paints below positioned z-0 elements.)
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    /* warm core, just outside the top-right corner */
+    radial-gradient(
+      58vw 52vh at 86% -8%,
+      rgba(255, 241, 224, calc(0.12 * var(--sunlight-strength))) 0%,
+      rgba(255, 241, 224, calc(0.058 * var(--sunlight-strength))) 40%,
+      rgba(255, 241, 224, 0) 72%
+    ),
+    /* broad, cooler spill reaching toward centre-left */
+    radial-gradient(
+      125vw 105vh at 100% -12%,
+      rgba(255, 246, 236, calc(0.067 * var(--sunlight-strength))) 0%,
+      rgba(255, 246, 236, calc(0.029 * var(--sunlight-strength))) 46%,
+      rgba(255, 246, 236, 0) 78%
+    ),
+    /* counter-vignette — pulls the far corner BELOW the base ground so the
+       lit corner reads as lit by contrast rather than by brightness. Must
+       be listed last so the light layers paint over it. */
+    radial-gradient(
+      120vw 100vh at 8% 108%,
+      rgba(0, 0, 0, calc(0.42 * var(--sunlight-strength))) 0%,
+      rgba(0, 0, 0, calc(0.2 * var(--sunlight-strength))) 40%,
+      rgba(0, 0, 0, 0) 75%
+    );
+  animation: sunlight-breathe 24s ease-in-out infinite;
+}
+
+@keyframes sunlight-breathe {
+  0%,
+  100% {
+    opacity: 0.92;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Proportionally taller viewports — cut spread and strength so the light
+   doesn't wash the whole screen or reach behind body copy. */
+@media (max-width: 640px) {
+  body::before {
+    background:
+      radial-gradient(
+        70vw 38vh at 88% -4%,
+        rgba(255, 241, 224, calc(0.086 * var(--sunlight-strength))) 0%,
+        rgba(255, 241, 224, calc(0.041 * var(--sunlight-strength))) 40%,
+        rgba(255, 241, 224, 0) 72%
+      ),
+      radial-gradient(
+        120vw 68vh at 100% -6%,
+        rgba(255, 246, 236, calc(0.048 * var(--sunlight-strength))) 0%,
+        rgba(255, 246, 236, calc(0.019 * var(--sunlight-strength))) 46%,
+        rgba(255, 246, 236, 0) 78%
+      ),
+      radial-gradient(
+        110vw 70vh at 5% 106%,
+        rgba(0, 0, 0, calc(0.26 * var(--sunlight-strength))) 0%,
+        rgba(0, 0, 0, calc(0.12 * var(--sunlight-strength))) 40%,
+        rgba(0, 0, 0, 0) 75%
+      );
+  }
 }
 
 :focus-visible {

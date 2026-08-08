@@ -31,7 +31,7 @@ export function Colophon() {
         </nav>
       </div>
 
-      <p className="mt-[64px] text-caption text-ink/50">
+      <p className="mt-[64px] text-caption text-ink/60">
         © {new Date().getFullYear()} {site.name}. {site.location}.
       </p>
     </Section>

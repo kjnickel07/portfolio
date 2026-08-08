@@ -1,3 +1,5 @@
+> **Historical note:** this was the original style reference the site launched with (light theme, blue accent). The site has since moved to a dark minimalist monochrome theme — black ground, white/soft-gray type, no chroma in the chrome, except the Service UNSW phone mockup which stays lit in its real app colors. `app/globals.css` is the current authority on color; this document is kept as background on the original design rationale, not as live spec.
+
 # destroytoday.com — Style Reference
 > Designer's monograph on cream paper. A portfolio that reads like a printed document — paragraph text, underlined links, small blue initials stamp, and illustrations that arrive as full-bleed moments between blocks of writing.
 

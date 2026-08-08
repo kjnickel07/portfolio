@@ -28,7 +28,7 @@ export function About() {
           <div className="flex flex-col gap-[64px]">
             {marginalia.map((note) => (
               <Parallax key={note.text} rate={note.rate}>
-                <p className="text-caption text-ink/60">{note.text}</p>
+                <p className="text-caption text-ink/70">{note.text}</p>
               </Parallax>
             ))}
           </div>

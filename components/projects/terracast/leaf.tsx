@@ -28,6 +28,22 @@ const VEINS = [
 ] as const;
 
 /**
+ * The leaf alone — pure presentation, no motion, so the animated Leaf and the
+ * reduced-motion StaticVine render the identical shape and cannot drift apart.
+ */
+export function LeafShape() {
+  return (
+    <>
+      <path d={LEAF_PATH} fill={VinePalette.leaf} fillOpacity={0.9} />
+      <path d={LEAF_PATH} fill={VinePalette.leafDark} fillOpacity={0.35} transform="translate(1.2 0.8)" />
+      {VEINS.map((d) => (
+        <path key={d} d={d} stroke={VinePalette.vein} strokeWidth={0.5} strokeOpacity={0.55} fill="none" />
+      ))}
+    </>
+  );
+}
+
+/**
  * A single leaf that unfolds — scale 0→1 *and* a rotational settle from a
  * folded angle into its final orientation — as growth crosses its
  * threshold, so it reads as unfurling rather than just popping in.
@@ -38,11 +54,7 @@ export function Leaf({ x, y, rotate, growth, threshold, flip = false }: LeafProp
 
   return (
     <motion.g style={{ x, y, rotate: unfold, scale: scale, scaleX: flip ? -1 : 1 }}>
-      <path d={LEAF_PATH} fill={VinePalette.leaf} fillOpacity={0.9} />
-      <path d={LEAF_PATH} fill={VinePalette.leafDark} fillOpacity={0.22} transform="translate(1.2 0.8)" />
-      {VEINS.map((d) => (
-        <path key={d} d={d} stroke={VinePalette.vein} strokeWidth={0.5} strokeOpacity={0.55} fill="none" />
-      ))}
+      <LeafShape />
     </motion.g>
   );
 }

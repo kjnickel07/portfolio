@@ -74,7 +74,7 @@ export function Header() {
 
   return (
     <motion.header
-      className="fixed inset-x-0 top-0 z-50 border-b border-stone bg-paper"
+      className="fixed inset-x-0 top-0 z-50 border-b border-stone bg-paper/70 backdrop-blur-xl"
       animate={{ y: hidden ? "-100%" : "0%" }}
       transition={snap}
     >

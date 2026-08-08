@@ -24,7 +24,7 @@ export function RiskLine({ progress }: RiskLineProps) {
       <DrawPath
         pathLength={reduced ? 1 : progress}
         d={POINTS}
-        stroke="#222222"
+        stroke="var(--color-ink)"
         strokeWidth={1.4}
         strokeLinecap="round"
       />

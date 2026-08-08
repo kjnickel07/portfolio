@@ -38,7 +38,7 @@ export function Phone({ progress }: PhoneProps) {
   return (
     <div style={{ perspective: 1400 }} className="mx-auto w-[clamp(220px,26vw,300px)]">
       <motion.div
-        className="relative aspect-[393/852] w-full rounded-[44px] bg-ink"
+        className="relative aspect-[393/852] w-full rounded-[44px] bg-device"
         style={{
           y: scene.y,
           scale: scene.scale,
@@ -54,16 +54,19 @@ export function Phone({ progress }: PhoneProps) {
           borderRightStyle: "solid",
           borderLeftWidth: scene.bezelLeft,
           borderRightWidth: scene.bezelRight,
-          borderColor: "#222222",
+          borderColor: "var(--color-device)",
         }}
       >
         {/* Lift shadow — the one sanctioned shadow: content, not chrome.
             Skewed and offset by rotateY so it reads as cast by a tilted
-            object rather than a flat card floating above a fixed blur. */}
+            object rather than a flat card floating above a fixed blur. On
+            the dark page this reads as light spill from a lit phone
+            rather than a cast shadow, so it's a soft white glow
+            (shadowGlowOpacity) rather than the navy blur it used to be. */}
         <motion.div
           aria-hidden
-          className="absolute inset-x-8 -bottom-4 h-8 rounded-full bg-navy blur-2xl"
-          style={{ opacity: scene.shadowOpacity, y: scene.shadowY, x: scene.shadowX, transform: scene.shadowSkew }}
+          className="absolute inset-x-8 -bottom-4 h-8 rounded-full bg-white blur-2xl"
+          style={{ opacity: scene.shadowGlowOpacity, y: scene.shadowY, x: scene.shadowX, transform: scene.shadowSkew }}
         />
 
         {/* Depth shading — a light/shadow wash across the whole body that
@@ -122,7 +125,7 @@ export function Phone({ progress }: PhoneProps) {
                 timing change. */}
             <div className="pointer-events-none absolute left-1/2 top-[26%] z-20 -translate-x-1/2 -translate-y-1/2">
               <motion.p
-                className="whitespace-nowrap text-[18px] font-semibold text-ink"
+                className="whitespace-nowrap text-[18px] font-semibold text-device"
                 style={{ x: scene.wordmarkX, y: scene.wordmarkY, scale: scene.wordmarkScale, opacity: wordmarkDisplayOpacity }}
               >
                 ServiceUNSW

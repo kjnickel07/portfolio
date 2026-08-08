@@ -21,7 +21,7 @@ export function Particles() {
         <motion.span
           key={i}
           className="absolute top-full h-[3px] w-[3px] rounded-full bg-ink"
-          style={{ left: particle.left, opacity: 0.12 }}
+          style={{ left: particle.left, opacity: 0.18 }}
           animate={{ y: ["0%", "-120vh"] }}
           transition={{ duration: 22, delay: particle.delay, repeat: Infinity, ease: "linear" }}
         />
