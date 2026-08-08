@@ -15,7 +15,7 @@ export function Experience() {
           <div key={role.title} className="grid grid-cols-1 gap-[8px] py-[32px] md:grid-cols-[minmax(0,320px)_1fr]">
             <div>
               <p className="text-body-sm font-semibold text-ink">{role.title}</p>
-              <p className="text-caption text-ink/60">
+              <p className="text-caption text-ink/70">
                 {role.org} · {role.period}
               </p>
             </div>

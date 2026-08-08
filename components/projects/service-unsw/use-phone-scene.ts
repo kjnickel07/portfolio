@@ -27,6 +27,11 @@ export function usePhoneScene(progress: MotionValue<number>) {
   const filter = useTransform(blur, (b) => `blur(${b}px)`);
 
   const shadowOpacity = useTransform(progress, [0, 0.2, 0.8, 1], [0.15, 0.4, 0.4, 0.15]);
+  // On the dark page the cast "shadow" is rendered as a white glow (light
+  // spill from a lit phone, not a dark shadow) — same timeline as
+  // shadowOpacity, just dimmer, since a glow at full shadow strength
+  // would overpower the page.
+  const shadowGlowOpacity = useTransform(shadowOpacity, (v) => v / 3);
   const shadowY = useTransform(progress, [0, 0.2, 0.8, 1], [20, 48, 48, 20]);
   // The shadow is cast by a tilted object, so it must move and skew with
   // rotateY rather than sitting fixed beneath a flat card — this is the
@@ -78,6 +83,7 @@ export function usePhoneScene(progress: MotionValue<number>) {
     rotateY,
     filter,
     shadowOpacity,
+    shadowGlowOpacity,
     shadowY,
     shadowX,
     shadowSkew,

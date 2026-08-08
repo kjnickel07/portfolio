@@ -5,8 +5,8 @@ import { useSectionProgress } from "@/lib/use-section-progress";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { useVineGrowth } from "./use-vine-growth";
 import { Vine, STEM_SEGMENTS, BRANCHES, TENDRILS, LEAVES, GRAPES } from "./vine";
-import { LEAF_PATH } from "./leaf";
-import { GRAPE_LAYOUT } from "./grapes";
+import { LeafShape } from "./leaf";
+import { GrapeBunch, STALK_WIDTH } from "./grapes";
 import { VinePalette } from "./vine-palette";
 import { Particles } from "./particles";
 import { RiskLine } from "./risk-line";
@@ -43,7 +43,7 @@ export function TerracastScene() {
 
       <ul className="mt-[24px] flex flex-wrap justify-center gap-x-[16px] gap-y-[4px]">
         {terracast.stack.map((s) => (
-          <li key={s} className="text-caption text-ink/60">
+          <li key={s} className="text-caption text-ink/70">
             {s}
           </li>
         ))}
@@ -117,32 +117,24 @@ function StaticVine({ side }: { side: "left" | "right" }) {
             key={i}
             transform={`translate(${leaf.x} ${leaf.y}) rotate(${leaf.rotate}) scale(${leaf.flip ? -1 : 1}, 1)`}
           >
-            <path d={LEAF_PATH} fill={VinePalette.leaf} fillOpacity={0.9} />
-            <path d={LEAF_PATH} fill={VinePalette.leafDark} fillOpacity={0.22} transform="translate(1.2 0.8)" />
+            <LeafShape />
           </g>
         ))}
 
         {GRAPES.map((grape, i) => (
-          <g key={i} transform={`translate(${grape.x} ${grape.y}) rotate(${grape.rotate})`}>
-            {GRAPE_LAYOUT.map((dot, j) => (
-              <g key={j} transform={`translate(${dot.x} ${dot.y})`}>
-                <circle
-                  r={dot.r}
-                  fill={dot.tone === "back" ? VinePalette.grapeBack : dot.tone === "mid" ? VinePalette.grapeMid : VinePalette.grapeFront}
-                  fillOpacity={dot.tone === "back" ? 0.85 : 0.95}
-                />
-                {dot.tone === "front" && (
-                  <ellipse
-                    cx={-dot.r * 0.32}
-                    cy={-dot.r * 0.38}
-                    rx={dot.r * 0.34}
-                    ry={dot.r * 0.24}
-                    fill={VinePalette.grapeHighlight}
-                    fillOpacity={0.4}
-                  />
-                )}
-              </g>
-            ))}
+          <g key={i} transform={`translate(${grape.x} ${grape.y})`}>
+            <path
+              d={grape.stalk}
+              stroke={VinePalette.stem}
+              strokeWidth={STALK_WIDTH}
+              strokeLinecap="round"
+              fill="none"
+            />
+            <g
+              transform={`translate(${grape.bunch.dx} ${grape.bunch.dy}) rotate(${grape.bunch.rotate}) scale(${grape.bunch.scale})`}
+            >
+              <GrapeBunch />
+            </g>
           </g>
         ))}
       </svg>

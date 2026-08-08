@@ -48,7 +48,7 @@ export function ServiceUnswScene() {
             <div>
               <p className="mb-[8px] text-caption text-link">{serviceUnsw.eyebrow}</p>
               <h2 className="mb-[8px] text-heading font-bold text-ink">{serviceUnsw.name}</h2>
-              <p className="mb-[32px] text-body-sm text-ink/60">{serviceUnsw.role}</p>
+              <p className="mb-[32px] text-body-sm text-ink/70">{serviceUnsw.role}</p>
               <Hairline className="mb-[32px] max-w-[320px]" />
               <Beats progress={progress} />
             </div>
@@ -116,7 +116,7 @@ function StaticSummary() {
         <LineReveal as="h2" className="mb-[8px] text-heading font-bold text-ink">
           {serviceUnsw.name}
         </LineReveal>
-        <p className="mb-[32px] text-body-sm text-ink/60">{serviceUnsw.role}</p>
+        <p className="mb-[32px] text-body-sm text-ink/70">{serviceUnsw.role}</p>
         <Hairline className="mb-[32px] max-w-[320px]" />
         <p className="reading-measure mb-[24px] text-body-sm text-ink">{serviceUnsw.summary}</p>
         <ul className="flex flex-col gap-[8px]">
@@ -124,7 +124,7 @@ function StaticSummary() {
             <li key={beat.title}>
               <p className="text-caption text-link">{beat.range}</p>
               <p className="text-body-sm font-semibold text-ink">{beat.title}</p>
-              <p className="text-body-sm text-ink/70">{beat.body}</p>
+              <p className="text-body-sm text-ink/75">{beat.body}</p>
             </li>
           ))}
         </ul>
@@ -161,7 +161,7 @@ function PhoneStatic() {
   const scale = usePhoneScale(screenRef);
 
   return (
-    <div className="mx-auto w-[clamp(220px,26vw,300px)] overflow-hidden rounded-[44px] border-[6px] border-ink bg-white">
+    <div className="mx-auto w-[clamp(220px,26vw,300px)] overflow-hidden rounded-[44px] border-[6px] border-device bg-white">
       <div ref={screenRef}>
         <PhoneScaleProvider scale={scale}>
           <AppHeader />

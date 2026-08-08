@@ -73,7 +73,7 @@ export function Hero() {
           style={{ opacity: cueOpacity }}
           aria-hidden
         >
-          <span className="text-caption text-ink/50">Scroll</span>
+          <span className="text-caption text-ink/60">Scroll</span>
           <div className="relative h-[26px] w-px bg-stone">
             <motion.span
               className="absolute left-1/2 h-[4px] w-[4px] -translate-x-1/2 rounded-full bg-ink"

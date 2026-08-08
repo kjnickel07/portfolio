@@ -4,7 +4,7 @@ import { motion, type MotionValue } from "motion/react";
 import { DrawPath } from "@/components/motion/draw-path";
 import { Leaf } from "./leaf";
 import { Tendril } from "./tendril";
-import { GrapeCluster } from "./grapes";
+import { GrapeCluster, type GrapeClusterPlacement } from "./grapes";
 import { VinePalette } from "./vine-palette";
 import { useSegmentGrowth } from "./use-vine-growth";
 
@@ -71,12 +71,56 @@ export const TENDRILS = [
   { t: 0.76, x: 32, y: 112, rotate: -150 },
 ] as const;
 
-/** Three bunches spread along the stem, setting as growth reaches each. */
-export const GRAPES = [
-  { t: 0.22, x: 12, y: 520, rotate: -8 },
-  { t: 0.56, x: -4, y: 200, rotate: 0 },
-  { t: 0.72, x: 46, y: 280, rotate: 12 },
-] as const;
+/**
+ * Three bunches, each hung off its own peduncle. `x`/`y` is a point that lies
+ * exactly ON the main stem curve (verified against the bezier geometry, not
+ * eyeballed), and the stalk path starts at that point's local 0,0 — so the
+ * fruit is attached by construction rather than by being parked nearby.
+ *
+ * All three sit on the base cane (segment 1, y 380–780) for two reasons: fruit
+ * grows on the woody cane, and the SVG's `xMidYMax slice` fit means only
+ * roughly y 330–795 / x 13–63 is visible at every viewport size we support.
+ * Anything higher gets cropped on a short desktop.
+ *
+ * Anchors are the cane's three rightward extremes (y 720/620/500), and each
+ * bunch hangs far enough out to clear the cane's own excursion across the
+ * bunch's y-span — the stem wanders 3–5u sideways over that range, so a bunch
+ * hung "just off" the anchor ends up with the cane running straight through
+ * the fruit. Measured clearances are 4.9u / 5.1u / 3.5u.
+ *
+ * Each stalk leaves the cane sideways and curves to near-vertical, as one
+ * loaded with fruit would, and terminates *inside* the bunch's crown grape so
+ * the junction can never show a gap. Variation between the three comes from
+ * stalk length/curvature and bunch scale/rotation — not from randomness.
+ *
+ * Branch 1 is deliberately left fruitless: a tendril sits 3.6u from its base
+ * and a leaf lands exactly on its midpoint, and its tip falls outside the
+ * visible window.
+ */
+export const GRAPES: GrapeClusterPlacement[] = [
+  // Listed bottom-of-cane upward, which is also the order they set in.
+  {
+    t: 0.3,
+    x: 32.9,
+    y: 720,
+    stalk: "M0,0 C5.0,2.2 9.8,5.2 11.4,10.2 C12.2,13.4 12.1,16.2 12,18.6",
+    bunch: { dx: 12, dy: 17, scale: 1, rotate: 4 },
+  },
+  {
+    t: 0.44,
+    x: 24.0,
+    y: 620,
+    stalk: "M0,0 C7.0,2.0 13.6,5.0 16.0,10.6 C17.0,13.6 17.1,16.8 17,19.6",
+    bunch: { dx: 17, dy: 18, scale: 1.06, rotate: 5 },
+  },
+  {
+    t: 0.58,
+    x: 40.8,
+    y: 500,
+    stalk: "M0,0 C5.0,1.8 9.6,4.4 11.2,9.4 C12.0,12.2 12.0,15.2 12,17.6",
+    bunch: { dx: 12, dy: 16, scale: 0.92, rotate: -4 },
+  },
+];
 
 /**
  * One full vine: a tapered branching stem, tendrils, palmate leaves and
@@ -131,7 +175,15 @@ export function Vine({ side, growth }: VineProps) {
           ))}
 
           {GRAPES.map((grape, i) => (
-            <GrapeCluster key={i} x={grape.x} y={grape.y} rotate={grape.rotate} growth={growth} threshold={grape.t} />
+            <GrapeCluster
+              key={i}
+              x={grape.x}
+              y={grape.y}
+              stalk={grape.stalk}
+              bunch={grape.bunch}
+              growth={growth}
+              threshold={grape.t}
+            />
           ))}
         </g>
       </motion.svg>
