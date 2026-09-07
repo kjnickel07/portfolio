@@ -1,4 +1,4 @@
-import type { Transition } from "motion/react";
+import { cubicBezier, type Transition } from "motion/react";
 
 /**
  * Central motion vocabulary.
@@ -48,3 +48,12 @@ export function staggerChildren(amount = 0.06, delay = 0.02): Transition {
 
 /** Editorial ease for non-spring (duration-based) transitions, e.g. opacity fades. */
 export const easeEditorial = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * Scroll-scrubbed segments (useTransform's `ease` option) take easing
+ * FUNCTIONS, not bezier arrays, so the two curves below are the function
+ * forms. tumbleEase is a symmetric ease-in-out for the phone's fall
+ * segments; easeEditorialFn is easeEditorial for its landing.
+ */
+export const tumbleEase = cubicBezier(0.45, 0, 0.55, 1);
+export const easeEditorialFn = cubicBezier(...easeEditorial);

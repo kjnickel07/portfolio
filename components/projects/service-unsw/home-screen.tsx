@@ -2,90 +2,89 @@
 
 import { motion, useTransform, type MotionValue } from "motion/react";
 import { FiChevronUp } from "react-icons/fi";
-import { AppColors, AppSpacing, AppType } from "./app-reference";
+import { AppColors, AppLogin, AppSpacing, AppType } from "./app-reference";
+import { AppHeader } from "./app-header";
 import { StudentIdCard } from "./student-id-card";
 import { FavouritesRow } from "./favourites-row";
 import { ClassCard } from "./class-card";
 import { usePx } from "./phone-scale-context";
 
-interface HomeScreenProps {
-  progress: MotionValue<number>;
-  /** Home content splits across the same two shared containers as LoginScreen. */
-  slot: "hero" | "sheet";
-}
-
-// The real placeholder classes from constants/home-placeholder.ts.
-const CLASSES = [
+/** The real placeholder classes from constants/home-placeholder.ts. Shared
+ * with the reduced-motion PhoneStatic so the two can never drift apart.
+ * The en-dash times are ported app text. */
+export const CLASSES = [
   { code: "COMP1111", type: "Tutorial", time: "1–2pm", location: "SEB 100", color: AppColors.classBlue },
   { code: "COMP2222", type: "Lecture", time: "4–6pm", location: "Mathews\nTheatre A", color: AppColors.classPink },
 ];
 
+interface HomeScreenProps {
+  /** 0 to 1 across the landing window (use-phone-scene.ts). */
+  landing: MotionValue<number>;
+}
+
 /**
- * Home-only content, ported from `index.tsx` at real point values —
- * the student ID card, Favourites, and a Daily Overview collapsible
- * header (default open, per the real `ScheduleDay`/`Collapsible`) over
- * the real placeholder classes. Springs in on the same progress ranges
- * as before; only the visual content changed.
+ * The home screen at rest, ported from `index.tsx` at real point values:
+ * white header, yellow Student ID banner, and the sheet with Favourites and
+ * the Daily Overview. Present in full from the cut onward (the front face is
+ * visible again mid-air, and a missing card would read as a hole); the only
+ * motion is an impact settle on the card as the phone lands.
  */
-export function HomeScreen({ progress, slot }: HomeScreenProps) {
+export function HomeScreen({ landing }: HomeScreenProps) {
   const px = usePx();
-  const headingOpacity = useTransform(progress, [0.4, 0.5], [0, 1]);
-  const cardOpacity = useTransform(progress, [0.44, 0.56], [0, 1]);
-  const cardY = useTransform(progress, [0.44, 0.58], [28, 0]);
-  const cardScale = useTransform(progress, [0.44, 0.58, 0.64], [0.85, 1.04, 1]);
-
-  const favOpacity = useTransform(progress, [0.56, 0.66], [0, 1]);
-  const favY = useTransform(progress, [0.56, 0.68], [20, 0]);
-  const classOpacity = useTransform(progress, [0.62, 0.72], [0, 1]);
-  const classY = useTransform(progress, [0.62, 0.74], [20, 0]);
-
-  if (slot === "hero") {
-    return (
-      <div
-        className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
-        style={{ gap: px(AppSpacing.three), paddingBlock: px(AppSpacing.two) }}
-      >
-        <motion.p
-          style={{
-            opacity: headingOpacity,
-            fontSize: px(AppType.sectionTitle.size),
-            fontWeight: AppType.sectionTitle.weight,
-            color: AppColors.text,
-          }}
-        >
-          Student ID
-        </motion.p>
-        <motion.div style={{ opacity: cardOpacity, y: cardY, scale: cardScale }} className="w-full">
-          <StudentIdCard />
-        </motion.div>
-      </div>
-    );
-  }
+  const cardScale = useTransform(landing, [0, 0.3, 0.65, 1], [1, 0.97, 1.02, 1]);
+  const cardY = useTransform(landing, [0, 0.3, 0.65, 1], [0, 3, -2, 0]);
+  const sheetOverlap = px(27);
 
   return (
-    <div
-      className="absolute inset-x-0 top-0 flex flex-col"
-      style={{ paddingTop: px(AppSpacing.four), paddingInline: px(AppSpacing.four), gap: px(AppSpacing.five) }}
-    >
-      <motion.div style={{ opacity: favOpacity, y: favY }}>
-        <FavouritesRow />
-      </motion.div>
+    <div className="absolute inset-0" style={{ backgroundColor: AppColors.background }}>
+      <div className="absolute inset-x-0 top-0 z-20 h-[8%]" style={{ backgroundColor: AppColors.background }}>
+        <AppHeader />
+      </div>
 
-      <motion.div style={{ opacity: classOpacity, y: classY, display: "flex", flexDirection: "column", gap: px(AppSpacing.three) }}>
-        <div className="flex items-center justify-between">
-          <span
-            style={{ fontSize: px(AppType.sectionTitle.size), fontWeight: AppType.sectionTitle.weight, color: AppColors.text }}
-          >
-            Daily Overview
-          </span>
-          <FiChevronUp size={px(20)} color={AppColors.text} />
+      {/* Student ID banner */}
+      <div className="absolute inset-x-0 top-[8%] z-0 h-[30%] overflow-hidden" style={{ backgroundColor: AppColors.accent }}>
+        <div
+          className="flex h-full flex-col items-center justify-center"
+          style={{ gap: px(AppSpacing.three), paddingBlock: px(AppSpacing.two) }}
+        >
+          <p style={{ fontSize: px(AppType.sectionTitle.size), fontWeight: AppType.sectionTitle.weight, color: AppColors.text }}>
+            Student ID
+          </p>
+          <motion.div className="w-full" style={{ scale: cardScale, y: cardY }}>
+            <StudentIdCard />
+          </motion.div>
         </div>
+      </div>
+
+      {/* Sheet, overlapping the banner's lower edge as in the real app */}
+      <div
+        className="absolute inset-x-0 bottom-0 z-10 flex flex-col"
+        style={{
+          top: `calc(38% - ${sheetOverlap}px)`,
+          backgroundColor: AppColors.background,
+          borderTopLeftRadius: px(AppLogin.sheetRadius),
+          borderTopRightRadius: px(AppLogin.sheetRadius),
+          paddingTop: px(AppSpacing.four),
+          paddingInline: px(AppSpacing.four),
+          gap: px(AppSpacing.five),
+        }}
+      >
+        <FavouritesRow />
+
         <div className="flex flex-col" style={{ gap: px(AppSpacing.three) }}>
-          {CLASSES.map((c) => (
-            <ClassCard key={c.code} {...c} />
-          ))}
+          <div className="flex items-center justify-between">
+            <span style={{ fontSize: px(AppType.sectionTitle.size), fontWeight: AppType.sectionTitle.weight, color: AppColors.text }}>
+              Daily Overview
+            </span>
+            <FiChevronUp size={px(20)} color={AppColors.text} />
+          </div>
+          <div className="flex flex-col" style={{ gap: px(AppSpacing.three) }}>
+            {CLASSES.map((c) => (
+              <ClassCard key={c.code} {...c} />
+            ))}
+          </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

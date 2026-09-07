@@ -28,7 +28,10 @@ export function usePhoneScale(ref: RefObject<HTMLElement | null>): number {
       frame.current = requestAnimationFrame(() => setScale(width / REFERENCE_WIDTH));
     };
 
-    measure(el.getBoundingClientRect().width);
+    // offsetWidth is layout-space: the flight wrapper above the screen
+    // starts at scale 0.9, and a bounding rect would bake that in for the
+    // first frame (a 10% undersize until the ResizeObserver corrects it).
+    measure(el.offsetWidth);
 
     const observer = new ResizeObserver((entries) => {
       const width = entries[0]?.contentRect.width;
