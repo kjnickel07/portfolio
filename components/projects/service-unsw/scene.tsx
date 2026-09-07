@@ -1,8 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useTransform, type MotionValue } from "motion/react";
-import { FiBookOpen, FiCalendar, FiHome, FiLink, FiMapPin } from "react-icons/fi";
 import { serviceUnsw } from "@/lib/content";
 import { useSectionProgress } from "@/lib/use-section-progress";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
@@ -11,18 +9,25 @@ import { AppHeader } from "./app-header";
 import { StudentIdCard } from "./student-id-card";
 import { FavouritesRow } from "./favourites-row";
 import { ClassCard } from "./class-card";
+import { CLASSES } from "./home-screen";
+import { TABS } from "./tab-bar";
 import { AppColors, AppSpacing, AppTabBar, AppType } from "./app-reference";
 import { usePhoneScale } from "./use-phone-scale";
 import { PhoneScaleProvider, usePx } from "./phone-scale-context";
 import { LineReveal } from "@/components/motion/line-reveal";
+import { BlurIn } from "@/components/motion/blur-in";
 import { Hairline } from "@/components/layout/hairline";
 
 /**
- * The centrepiece: a 500vh scroll-driven scene. A sticky stage pins the
- * phone and a caption column while the user scrolls through five beats —
- * arrival, turn, morph, settle, release — documented in use-phone-scene.ts.
+ * The centrepiece. The phone column stays in view for the whole section
+ * (sticky) while the heading and the three captions scroll past it in
+ * normal flow, so the page keeps moving as the phone drops: the copy rises,
+ * the phone descends. The drop itself (hold, one smooth turn with the
+ * login-to-home cut, landing, hold) is documented in use-phone-scene.ts.
+ * The captions' spacing sets the section height and so the scroll
+ * distance: taller caption slots read slower.
  *
- * Under reduced motion the phone renders its fully-settled home state and
+ * Under reduced motion the phone renders its settled home state and
  * nothing here subscribes to scroll.
  */
 export function ServiceUnswScene() {
@@ -30,7 +35,7 @@ export function ServiceUnswScene() {
   const { ref, progress } = useSectionProgress<HTMLElement>();
 
   // A single, persistently-mounted section carries `ref` regardless of the
-  // reduced-motion branch — useScroll's target must never unmount/remount
+  // reduced-motion branch. useScroll's target must never unmount/remount
   // as `reduced` resolves after hydration, or it briefly observes a null
   // ref. See motion.dev/troubleshooting/use-scroll-ref.
   return (
@@ -38,73 +43,42 @@ export function ServiceUnswScene() {
       id={serviceUnsw.id}
       ref={ref}
       aria-label={`Case study: ${serviceUnsw.name}`}
-      className={reduced ? "px-[24px] py-[64px] md:px-[32px]" : "relative h-[500vh]"}
+      className={reduced ? "px-[24px] py-[64px] md:px-[32px]" : "relative"}
     >
       {reduced ? (
         <StaticSummary />
       ) : (
-        <div className="sticky top-0 flex h-screen items-center overflow-hidden px-[24px] md:px-[32px]">
-          <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-[48px] lg:grid-cols-[minmax(0,440px)_1fr]">
-            <div>
-              <p className="mb-[8px] text-caption text-link">{serviceUnsw.eyebrow}</p>
-              <h2 className="mb-[8px] text-heading font-bold text-ink">{serviceUnsw.name}</h2>
-              <p className="mb-[32px] text-body-sm text-ink/70">{serviceUnsw.role}</p>
-              <Hairline className="mb-[32px] max-w-[320px]" />
-              <Beats progress={progress} />
-            </div>
-            <div>
-              <Phone progress={progress} />
-            </div>
+        <div className="mx-auto flex max-w-[1200px] flex-col px-[24px] md:px-[32px] lg:grid lg:grid-cols-[minmax(0,440px)_1fr] lg:gap-[48px]">
+          {/* Phone stage: pinned for the section's duration. On small
+              screens it takes the top of the viewport and the copy scrolls
+              beneath it; at lg it is the right-hand column. */}
+          <div className="sticky top-0 z-10 h-[55dvh] overflow-hidden bg-paper lg:order-last lg:h-[100dvh] lg:bg-transparent">
+            <Phone progress={progress} />
+          </div>
+
+          {/* Copy, in flow. Each caption sits in its own tall slot so it
+              arrives as the phone reaches the matching beat. */}
+          <div className="pb-[64px] pt-[24px] lg:pt-[112px]">
+            <p className="mb-[8px] text-caption text-link">{serviceUnsw.eyebrow}</p>
+            <LineReveal as="h2" className="mb-[8px] text-heading font-bold text-ink">
+              {serviceUnsw.name}
+            </LineReveal>
+            <p className="mb-[32px] text-body-sm text-ink/70">{serviceUnsw.role}</p>
+            <Hairline className="max-w-[320px]" />
+
+            {serviceUnsw.beats.map((beat) => (
+              <div key={beat.title} className="flex min-h-[70dvh] items-center lg:min-h-[110dvh]">
+                <BlurIn>
+                  <p className="mb-[8px] text-caption text-link">{beat.range}</p>
+                  <p className="mb-[8px] text-subheading font-semibold text-ink">{beat.title}</p>
+                  <p className="reading-measure text-body-sm text-ink">{beat.body}</p>
+                </BlurIn>
+              </div>
+            ))}
           </div>
         </div>
       )}
     </section>
-  );
-}
-
-/**
- * Each beat's visible range, matched directly to the phone's own beats in
- * use-phone-scene.ts (arrival/turn, morph, settle/release) — stops/values
- * pairs for opacity, a small y-drift and a blur-to-sharp settle, so the
- * caption column reads as driven by the same instrument as the phone
- * rather than three discrete slides crossfading on their own timeline.
- */
-const BEAT_RANGES: { stops: number[]; opacity: number[]; y: number[]; blur: number[] }[] = [
-  { stops: [0, 0.22, 0.3], opacity: [1, 1, 0], y: [0, 0, -10], blur: [0, 0, 3] },
-  { stops: [0.18, 0.26, 0.34, 0.42], opacity: [0, 1, 1, 0], y: [10, 0, 0, -10], blur: [3, 0, 0, 3] },
-  { stops: [0.36, 0.46, 1], opacity: [0, 1, 1], y: [10, 0, 0], blur: [3, 0, 0] },
-];
-
-function Beats({ progress }: { progress: MotionValue<number> }) {
-  return (
-    <div className="relative min-h-[160px]">
-      {serviceUnsw.beats.map((beat, i) => (
-        <Beat key={beat.title} beat={beat} progress={progress} range={BEAT_RANGES[i]} />
-      ))}
-    </div>
-  );
-}
-
-function Beat({
-  beat,
-  progress,
-  range,
-}: {
-  beat: (typeof serviceUnsw.beats)[number];
-  progress: MotionValue<number>;
-  range: (typeof BEAT_RANGES)[number];
-}) {
-  const opacity = useTransform(progress, range.stops, range.opacity);
-  const y = useTransform(progress, range.stops, range.y);
-  const blur = useTransform(progress, range.stops, range.blur);
-  const filter = useTransform(blur, (b) => `blur(${b}px)`);
-
-  return (
-    <motion.div className="absolute inset-x-0 top-0" style={{ opacity, y, filter }}>
-      <p className="mb-[8px] text-caption text-link">{beat.range}</p>
-      <p className="mb-[8px] text-subheading font-semibold text-ink">{beat.title}</p>
-      <p className="reading-measure text-body-sm text-ink">{beat.body}</p>
-    </motion.div>
   );
 }
 
@@ -136,25 +110,11 @@ function StaticSummary() {
   );
 }
 
-const STATIC_CLASSES = [
-  { code: "COMP1111", type: "Tutorial", time: "1–2pm", location: "SEB 100", color: AppColors.classBlue },
-  { code: "COMP2222", type: "Lecture", time: "4–6pm", location: "Mathews\nTheatre A", color: AppColors.classPink },
-];
-
-const STATIC_TABS = [
-  { label: "Home", Icon: FiHome, active: true },
-  { label: "Schedule", Icon: FiCalendar, active: false },
-  { label: "Map", Icon: FiMapPin, active: false },
-  { label: "Bookings", Icon: FiBookOpen, active: false },
-  { label: "Links", Icon: FiLink, active: false },
-];
-
 /**
  * Reduced-motion path never mounts a scroll-linked Phone; a plain,
  * non-animated replica of the settled home screen stands in, reusing the
- * same real components as the animated Phone (AppHeader, StudentIdCard,
- * FavouritesRow, ClassCard) so the accessible fallback is equally
- * faithful to the real app, not a separate lower-fidelity mockup.
+ * same real components and the same class/tab data as the animated
+ * HomeScreen and TabBar, so the accessible fallback is equally faithful.
  */
 function PhoneStatic() {
   const screenRef = useRef<HTMLDivElement>(null);
@@ -189,7 +149,7 @@ function PhoneStatic() {
                 Daily Overview
               </p>
               <div className="flex flex-col" style={{ gap: AppSpacing.three * scale }}>
-                {STATIC_CLASSES.map((c) => (
+                {CLASSES.map((c) => (
                   <ClassCard key={c.code} {...c} />
                 ))}
               </div>
@@ -216,26 +176,29 @@ function StaticTabBar({ scale }: { scale: number }) {
         boxShadow: "0 4px 10px rgba(0,0,0,0.16)",
       }}
     >
-      {STATIC_TABS.map(({ label, Icon, active }) => (
-        <div key={label} className="relative flex flex-1 flex-col items-center justify-center" style={{ gap: px(2) }}>
-          {active && (
-            <div
-              className="absolute top-0"
-              style={{
-                height: px(AppTabBar.indicatorHeight),
-                width: `${AppTabBar.indicatorWidthPercent}%`,
-                backgroundColor: AppColors.accent,
-                borderBottomLeftRadius: px(4),
-                borderBottomRightRadius: px(4),
-              }}
-            />
-          )}
-          <Icon size={px(AppTabBar.iconSize)} color={active ? AppColors.text : AppColors.textSecondary} />
-          <span style={{ fontSize: px(AppTabBar.labelSize), fontWeight: active ? 600 : 400, color: active ? AppColors.text : AppColors.textSecondary }}>
-            {label}
-          </span>
-        </div>
-      ))}
+      {TABS.map(({ label, Icon }, i) => {
+        const active = i === 0;
+        return (
+          <div key={label} className="relative flex flex-1 flex-col items-center justify-center" style={{ gap: px(2) }}>
+            {active && (
+              <div
+                className="absolute top-0"
+                style={{
+                  height: px(AppTabBar.indicatorHeight),
+                  width: `${AppTabBar.indicatorWidthPercent}%`,
+                  backgroundColor: AppColors.accent,
+                  borderBottomLeftRadius: px(4),
+                  borderBottomRightRadius: px(4),
+                }}
+              />
+            )}
+            <Icon size={px(AppTabBar.iconSize)} color={active ? AppColors.text : AppColors.textSecondary} />
+            <span style={{ fontSize: px(AppTabBar.labelSize), fontWeight: active ? 600 : 400, color: active ? AppColors.text : AppColors.textSecondary }}>
+              {label}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }

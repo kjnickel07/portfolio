@@ -1,43 +1,27 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useTransform, type MotionValue } from "motion/react";
 import { AppColors, AppLogin, AppSpacing, AppType } from "./app-reference";
 import { usePx } from "./phone-scale-context";
 import { BASE_PATH } from "@/lib/base-path";
 
-interface LoginScreenProps {
-  progress: MotionValue<number>;
-  /** Login content splits across two shared containers in Phone: the
-   * collapsing yellow hero, and the white sheet beneath it. */
-  slot: "hero" | "sheet";
-}
-
 /**
- * Login-only content, ported from `signin.tsx` at real point values. Fades
- * and slides away as the scene crosses into the home phase — these
- * progress ranges are the choreography (kept exactly as tuned); only the
- * visual content within each range was rebuilt to match the real app.
+ * The login screen at rest, ported from `signin.tsx` at real point values:
+ * a yellow header strip, the yellow hero with the two decorative shards,
+ * the crest above the wordmark, and the white form sheet with the zID and
+ * password fields and the Login button. It does not animate; the phone
+ * scene cuts from this to HomeScreen while the back plate faces the viewer.
  */
-export function LoginScreen({ progress, slot }: LoginScreenProps) {
+export function LoginScreen() {
   const px = usePx();
-  const decorationOpacity = useTransform(progress, [0, 0.32], [1, 0]);
-  const fieldsOpacity = useTransform(progress, [0.32, 0.42], [1, 0]);
-  const fieldsY = useTransform(progress, [0.32, 0.46], [0, -24]);
-  const buttonOpacity = useTransform(progress, [0.36, 0.46], [1, 0]);
-  const buttonScale = useTransform(progress, [0.36, 0.46], [1, 0.7]);
+  const logoWidth = px(AppLogin.logoWidth) * 0.55;
+  const logoHeight = px(AppLogin.logoHeight) * 0.55;
+  const gap = px(AppSpacing.two);
 
-  if (slot === "hero") {
-    // The wordmark itself is a separate, persistently-morphing element in
-    // phone.tsx (unchanged) — this just adds the real crest above it,
-    // matching signin.tsx's brandWrap (logo above wordmark, gap 8),
-    // positioned just above the wordmark's known top:26% anchor.
-    const logoWidth = px(AppLogin.logoWidth) * 0.55;
-    const logoHeight = px(AppLogin.logoHeight) * 0.55;
-    const gap = px(AppSpacing.two);
-
-    return (
-      <motion.div className="pointer-events-none absolute inset-0" style={{ opacity: decorationOpacity }}>
+  return (
+    <div className="absolute inset-0" style={{ backgroundColor: AppColors.background }}>
+      {/* Header strip + hero share the yellow field */}
+      <div className="absolute inset-x-0 top-0 h-[42%] overflow-hidden" style={{ backgroundColor: AppColors.accent }}>
         <div
           className="absolute rounded-[24px] bg-white/45"
           style={{
@@ -60,79 +44,72 @@ export function LoginScreen({ progress, slot }: LoginScreenProps) {
             border: "1px solid rgba(255,255,255,0.6)",
           }}
         />
+      </div>
 
-        <div
-          className="absolute left-1/2"
-          style={{ top: `calc(26% - ${logoHeight + gap}px)`, transform: "translateX(-50%)" }}
-        >
-          <Image src={`${BASE_PATH}/unsw-logo.png`} alt="" width={logoWidth} height={logoHeight} unoptimized />
-        </div>
-      </motion.div>
-    );
-  }
-
-  return (
-    <motion.div
-      className="absolute inset-x-0 top-0 flex flex-col"
-      style={{
-        opacity: fieldsOpacity,
-        y: fieldsY,
-        paddingInline: px(AppSpacing.five),
-        paddingTop: px(AppSpacing.five),
-        gap: px(AppSpacing.three),
-      }}
-    >
-      <p style={{ fontSize: px(AppType.sectionTitle.size), fontWeight: AppType.sectionTitle.weight, color: AppColors.text }}>
-        Login
+      {/* Crest above the wordmark, both centred on the hero's brand anchor */}
+      <div
+        className="absolute left-1/2"
+        style={{ top: `calc(26% - ${logoHeight + gap}px)`, transform: "translateX(-50%)" }}
+      >
+        <Image src={`${BASE_PATH}/unsw-logo.png`} alt="" width={logoWidth} height={logoHeight} unoptimized />
+      </div>
+      <p
+        className="pointer-events-none absolute left-1/2 top-[26%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-[18px] font-semibold text-device"
+      >
+        ServiceUNSW
       </p>
 
-      <label className="flex flex-col" style={{ gap: px(AppSpacing.two) }}>
-        <span style={{ fontSize: px(AppType.caption.size), fontWeight: 600, color: AppColors.textSecondary }}>
-          zID
-        </span>
-        <span
-          style={{
-            height: px(AppLogin.inputHeight),
-            borderRadius: px(AppLogin.inputRadius),
-            border: `${px(AppLogin.inputBorderWidth)}px solid ${AppColors.backgroundSelected}`,
-            backgroundColor: AppColors.background,
-          }}
-        />
-      </label>
-
-      <label className="flex flex-col" style={{ gap: px(AppSpacing.two) }}>
-        <span style={{ fontSize: px(AppType.caption.size), fontWeight: 600, color: AppColors.textSecondary }}>
-          Password
-        </span>
-        <span
-          style={{
-            height: px(AppLogin.inputHeight),
-            borderRadius: px(AppLogin.inputRadius),
-            border: `${px(AppLogin.inputBorderWidth)}px solid ${AppColors.backgroundSelected}`,
-            backgroundColor: AppColors.background,
-          }}
-        />
-      </label>
-
-      <motion.span
-        className="flex items-center justify-center"
+      {/* Form sheet */}
+      <div
+        className="absolute inset-x-0 bottom-0 flex flex-col"
         style={{
-          opacity: buttonOpacity,
-          scale: buttonScale,
-          marginTop: px(AppSpacing.three),
-          height: px(AppLogin.buttonHeight),
-          minWidth: px(116),
-          paddingInline: px(18),
-          borderRadius: px(AppLogin.buttonRadius),
-          alignSelf: "flex-start",
-          backgroundColor: AppColors.text,
-          fontSize: px(AppType.button.size),
-          fontWeight: AppType.button.weight,
-          color: AppColors.background,
+          top: "42%",
+          backgroundColor: AppColors.background,
+          borderTopLeftRadius: px(AppLogin.sheetRadius),
+          borderTopRightRadius: px(AppLogin.sheetRadius),
+          paddingInline: px(AppSpacing.five),
+          paddingTop: px(AppSpacing.five),
+          gap: px(AppSpacing.three),
         }}
       >
-        Login
-      </motion.span>
-    </motion.div>
+        <p style={{ fontSize: px(AppType.sectionTitle.size), fontWeight: AppType.sectionTitle.weight, color: AppColors.text }}>
+          Login
+        </p>
+
+        {["zID", "Password"].map((label) => (
+          <label key={label} className="flex flex-col" style={{ gap: px(AppSpacing.two) }}>
+            <span style={{ fontSize: px(AppType.caption.size), fontWeight: 600, color: AppColors.textSecondary }}>
+              {label}
+            </span>
+            <span
+              style={{
+                height: px(AppLogin.inputHeight),
+                borderRadius: px(AppLogin.inputRadius),
+                border: `${px(AppLogin.inputBorderWidth)}px solid ${AppColors.backgroundSelected}`,
+                backgroundColor: AppColors.background,
+              }}
+            />
+          </label>
+        ))}
+
+        <span
+          className="flex items-center justify-center"
+          style={{
+            marginTop: px(AppSpacing.three),
+            height: px(AppLogin.buttonHeight),
+            minWidth: px(116),
+            paddingInline: px(18),
+            borderRadius: px(AppLogin.buttonRadius),
+            alignSelf: "flex-start",
+            backgroundColor: AppColors.text,
+            fontSize: px(AppType.button.size),
+            fontWeight: AppType.button.weight,
+            color: AppColors.background,
+          }}
+        >
+          Login
+        </span>
+      </div>
+    </div>
   );
 }
